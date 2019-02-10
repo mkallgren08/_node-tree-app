@@ -1,5 +1,5 @@
 export const AUTH_CONFIG = {
   domain: 'mkallgren.auth0.com',
-  clientId: '1UOi5soDI92D3Dxk89Nq7LmJld7URS-n',
+  clientId: 'xpoUbMBhs1c0kMja8CNxOILOIVs6ASZV',
   callbackUrl: 'http://localhost:3000/callback'
 }

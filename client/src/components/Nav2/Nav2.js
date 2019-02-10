@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Navbar, Button } from 'react-bootstrap';
-import Callback from '../../Callback/Callback.js';
+// import Callback from '../../Callback/Callback.js';
 import history from '../../history.js';
-import Auth from '../../Auth/Auth.js';
+// import Auth from '../../Auth/Auth.js';
 // import Auth from './Auth/Auth.js';
 import { Col, Container, Row } from "../Grid"
 
@@ -13,16 +13,19 @@ import { Col, Container, Row } from "../Grid"
 
 //const history = require('history')
 
-const auth = new Auth();
+// const auth = new Auth();
 
 
 class Nav2 extends Component {
   state = {
-    profile: {},
+    profile: {}
   }
 
 
+
   componentDidMount() {
+    console.log(this.props.user)
+    console.log(this.state.profile)
     //console.log('user profile: ' + JSON.stringify(this.state.profile, 2, null));
     // console.log('History object: ' + JSON.stringify(history, 2, null));
     // console.log('this.history: ' + this.history)
@@ -31,11 +34,13 @@ class Nav2 extends Component {
   }
 
   componentWillMount() {
+    console.log('changing state!')
+    // this.setState({profile:this.props.user})
     const { userProfile, getProfile, isAuthenticated } = this.props.auth;
     if (isAuthenticated()) {
       if (!userProfile) {
         getProfile((err, profile) => {
-          this.setState({ profile });
+          this.setState({ profile:profile });
           console.log('user profile: ' + JSON.stringify(this.state.profile, 2, null));
         });
       } else {
@@ -60,8 +65,6 @@ class Nav2 extends Component {
 
   render() {
     const { isAuthenticated } = this.props.auth;
-    const profile = this.state.profile
-
     return (
       <Container fluid>
         <Navbar fluid>
@@ -115,7 +118,7 @@ class Nav2 extends Component {
             <Col size="md-8">
               {
                 isAuthenticated() && (
-                  <h1>Welcome {profile.given_name}</h1>
+                  <h1>Welcome {this.state.profile.given_name}</h1>
                 )
               }
             </Col>
