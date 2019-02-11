@@ -98,7 +98,7 @@ class MainPage extends Component {
           <Jumbotron>
             {
               isAuthenticated() ?
-              <h1>Hello : Time to Get Coding!!</h1>:
+              <h1>Hello {this.state.profile.nickname}: Time to Get Coding!!</h1>:
               <h1> Hello! Time to get Coding! </h1>
             }
             
