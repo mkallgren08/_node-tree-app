@@ -1,5 +1,9 @@
+require('dotenv').config();
+
+console.log(process.env)
+
 export const AUTH_CONFIG = {
-  domain: 'mkallgren.auth0.com',
-  clientId: 'xpoUbMBhs1c0kMja8CNxOILOIVs6ASZV',
-  callbackUrl: 'http://localhost:3000/callback'
+  domain: `${process.env.REACT_APP_AUTH0_DOMAIN}`,
+  clientId: `${process.env.REACT_APP_AUTH0_CLIENT_ID}`,
+  callbackUrl: `${process.env.REACT_APP_AUTH0_CALLBACK_URL}`
 }

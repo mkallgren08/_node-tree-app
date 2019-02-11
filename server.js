@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const routes = require("./routes");
 
 require('dotenv').config();
-
+console.log(process.env)
 const PORT = process.env.PORT || 3001;
 const app = express();
 
@@ -33,6 +33,8 @@ mongoose.Promise = global.Promise;
 // "mongodb://heroku_cwf2cqkx:8vpi8pekalrvhlae96mahc4ktq@ds153494.mlab.com:53494/heroku_cwf2cqkx"
 
 //  'mongodb://localhost/hangman_options' ||
+
+
 let mongoConnect = process.env.MONGODB_URI;
 // Connect to the Mongo DB
 mongoose.connect(
