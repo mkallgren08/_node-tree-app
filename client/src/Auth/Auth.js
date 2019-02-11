@@ -1,6 +1,6 @@
 import history from '../history.js';
 import auth0 from 'auth0-js';
-import { AUTH_CONFIG } from './auth0-variables';
+import  AUTH_CONFIG  from './auth0-variables';
 
 require('dotenv').config();
 console.log(process.env)

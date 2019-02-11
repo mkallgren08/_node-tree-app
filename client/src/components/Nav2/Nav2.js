@@ -118,7 +118,7 @@ class Nav2 extends Component {
             <Col size="md-8">
               {
                 isAuthenticated() && (
-                  <h1>Welcome {this.state.profile.given_name}</h1>
+                  <h1>Welcome </h1>
                 )
               }
             </Col>
