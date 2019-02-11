@@ -1,3 +1,3 @@
 module.exports = {
-  TestData: require("./testdata")
+  Child: require("./child"),
 };

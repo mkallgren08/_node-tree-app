@@ -24,8 +24,8 @@ class Nav2 extends Component {
 
 
   componentDidMount() {
-    console.log(this.props.user)
-    console.log(this.state.profile)
+    // console.log(this.props.user)
+    // console.log(this.state.profile)
     //console.log('user profile: ' + JSON.stringify(this.state.profile, 2, null));
     // console.log('History object: ' + JSON.stringify(history, 2, null));
     // console.log('this.history: ' + this.history)
@@ -34,7 +34,7 @@ class Nav2 extends Component {
   }
 
   componentWillMount() {
-    console.log('changing state!')
+    // console.log('changing state!')
     // this.setState({profile:this.props.user})
     const { userProfile, getProfile, isAuthenticated } = this.props.auth;
     if (isAuthenticated()) {

@@ -2,8 +2,8 @@ import axios from "axios";
 
 export default {
   //Gets a test case
-  getTestData: function(){
-    return axios.get("/api/testdata")
+  getNodeData: function(){
+    return axios.get("/api/nodes")
   },
   //Get all animals
   getBiodiversity: function(){
@@ -22,8 +22,8 @@ export default {
   deleteArticle: function(id) {
     return axios.delete("/api/articles/" + id);
   },
-  // Saves a book to the database
-  saveArticle: function(articleData) {
+  // Saves a node to the database
+  saveNode: function(articleData) {
     return axios.post("/api/articles", articleData);
   }
 };

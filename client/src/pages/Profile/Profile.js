@@ -3,7 +3,7 @@ import { Panel, ControlLabel, Glyphicon } from 'react-bootstrap';
 import './Profile.css';
 import Nav2 from "../../components/Nav2";
 // import { Container } from '../../components/Grid/index';
-import { Col, Row, Container } from "../../components/Grid";
+import { /*Col,*/ Row, Container } from "../../components/Grid";
 // import { List, ListItem } from "../../components/List";
 
 class Profile extends Component {

@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const routes = require("./routes");
 
 require('dotenv').config();
-console.log(process.env)
+//console.log(process.env)
 const PORT = process.env.PORT || 3001;
 const app = express();
 
@@ -36,6 +36,8 @@ mongoose.Promise = global.Promise;
 
 
 let mongoConnect = process.env.MONGODB_URI;
+
+
 // Connect to the Mongo DB
 mongoose.connect(
   mongoConnect, {
