@@ -54,16 +54,16 @@ class CustomForm extends Component {
             onChange={this.props.handleInputChange}
             required
           />
-          <label htmlFor="numGrandchildren">
+          <label htmlFor="numGrandChildren">
             <strong>Number of Nodes</strong>
           </label>
           <input
             className="form-control"
-            id="numGrandchildren"
+            id="numGrandChildren"
             type="number"
             value={this.props.number}
             placeholder="Minimum of 1; Maximum of 15"
-            name="numGrandchildren"
+            name="numGrandChildren"
             onChange={this.props.handleInputChange}
             required
           />

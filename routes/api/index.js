@@ -16,30 +16,61 @@ const router = express.Router();
 router.post('/new', (req, res) => {
   console.log(Child)
   Child.create({
-    nodetype: req.body.type,
+    nodetype: req.body.nodetype,
     parent: req.body.parent,
     name: req.body.name,
     value: req.body.value
-  }, (err, task) => {
+  }, (err, child) => {
     if (err) {
       console.log('CREATE Error: ' + err);
       res.status(500).send('Error');
     } else {
-      res.status(200).json(task);
+      res.status(200).json(child);
     }
   });
 });
 
-router.route('/:id')
-  /* DELETE */
+/* UPDATE */
+router.post('/edit/:id', (req, res) => {
+  console.log(req.body)
+  // Child.create({
+  //   nodetype: req.body.nodetype,
+  //   parent: req.body.parent,
+  //   name: req.body.name,
+  //   value: req.body.value
+  // }, (err, task) => {
+  //   if (err) {
+  //     console.log('CREATE Error: ' + err);
+  //     res.status(500).send('Error');
+  //   } else {
+  //     res.status(200).json(task);
+  //   }
+  // });
+  Child.findOneAndUpdate(
+    {_id:req.params.id}, {$set:{name:req.body.newName}},
+    {new:true},(err,child)=>{
+      if (err) {
+        console.log(`UPDATE Error: ${err}`)
+        res.status(500).send('Error')
+      } else if (child) {
+        res.status(200).json(child)
+      } else {
+        res.status(404).send('Not found');
+      }
+    })
+});
+
+/* DELETE */
+router.route('/delete/:id')
   .delete((req, res) => {
-    Task.findById(req.params.id, (err, task) => {
+    // console.log(req.params.id)
+    Child.findById(req.params.id, (err, child) => {
       if (err) { 
         console.log('DELETE Error: ' + err);
         res.status(500).send('Error');
-      } else if (task) {
-        task.remove( () => {
-          res.status(200).json(task);
+      } else if (child) {
+        child.remove( () => {
+          res.status(200).json(child);
         });
      } else {
         res.status(404).send('Not found');

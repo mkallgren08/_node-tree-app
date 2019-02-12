@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export default {
-  //Gets a test case
+  //Gets all nodes
   getNodeData: function(){
     return axios.get("/api/nodes")
   },
@@ -10,20 +10,20 @@ export default {
     return axios.get("/api/biodiversity")
   },
 
-  // Gets all books
-  getArticles: function() {
-    return axios.get("/api/articles");
+  // Edits a node with the given id
+  editNode: function(id, nodeData) { 
+    return axios.post("/api/edit/" + id, nodeData);
   },
-  // Gets the book with the given id
-  getArticle: function(id) {
-    return axios.get("/api/articles/" + id);
+  // Deletes many entries at once
+  deleteMany: function(id) {
+    return axios.delete("/api/deleteMany/" + id);
   },
-  // Deletes the book with the given id
-  deleteArticle: function(id) {
-    return axios.delete("/api/articles/" + id);
+  // Deletes the node with the given id
+  deleteNode: function(id) {
+    return axios.delete("/api/delete/" + id);
   },
   // Saves a node to the database
-  saveNode: function(articleData) {
-    return axios.post("/api/articles", articleData);
+  saveNode: function(nodeData) {
+    return axios.post("/api/new", nodeData);
   }
 };

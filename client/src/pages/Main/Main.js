@@ -19,7 +19,17 @@ class MainPage extends Component {
     numGrandChildren: null,
     minVal: null,
     maxVal: null,
-    errorFields: []
+    errorFields: [],
+    sampleData:{
+      numGrandChildren:3,
+      newName: 'Updatarooney',
+      minVal: 22,
+      maxVal: 5800,
+      nodetype: 'child',
+      parent: null,
+      name: 'Test Entry',
+      value: null
+    }
   };
 
 
@@ -32,15 +42,16 @@ class MainPage extends Component {
     this.handleModalClose = this.handleModalClose.bind(this)
     this.handleModalShow = this.handleModalShow.bind(this)
     // this.handleInputChange = this.handleInputChange.bind(this)
-
   }
   
-
   // Initial load of saved items
   componentDidMount() {
     this.loadNodeData();
   };
-
+  
+  // =============================================================
+  //  DB Read/Write Functions
+  // =============================================================
   loadNodeData = () => {
     API.getNodeData()
       .then(
@@ -50,6 +61,64 @@ class MainPage extends Component {
         })
       .catch(err => console.log(err));
   };
+
+  sendNode = () => {
+    this.postNodes(this.state.sampleData)
+  }
+
+  postNodes = (nodes) =>{
+    console.log(nodes)
+    API.saveNode(nodes)
+    .then(res=> {
+      console.log(res)
+      this.loadNodeData()
+    })
+    .catch(err => console.log(err))
+  }
+
+  deleteNode = (id) => {
+    console.log(`Started the deletion process on id ${id}`)
+    API.deleteNode(id).then(res =>{
+      console.log(res)
+      this.loadNodeData()
+    })
+  }
+
+  changeNodeName = (id, newName) => {
+    newName = {newName:this.state.sampleData.newName}
+    console.log(`Started the editing process on id ${id} to change the name to ${newName}`)
+    API.editNode(id, newName).then(
+      res => {
+        console.log(res);
+        // setTimeout(this.loadNodeData,1000)
+        this.loadNodeData();
+        // let newNodes = []
+        // this.state.nodes.forEach((item) => {
+        //   if (item.id === id){
+        //     item.name = res.data.name
+        //   }
+        //   newNodes.push(item)
+        // })
+        // this.setState({nodes:newNodes}, ()=> {console.log(this.state.nodes)})
+      }
+    )
+  }
+
+  changeNodeChildren = (id) =>{
+    console.log(`Started the deletion process on id ${id}`)
+    API.deleteMany(id).then(res =>{
+      console.log(res)
+      this.generateGrndchld()
+    })
+  }
+  // =============================================================
+  //  Data Manipulation Functions
+  // =============================================================
+  generateGrndchld = () => {
+    let x = this.state.sampleData.numGrandchildren
+    let min = this.state.sampleData.minVal
+  }
+
 
   parseNodes = (data) => {
     let nodes = [];
@@ -83,6 +152,9 @@ class MainPage extends Component {
     console.log(nodes)
     this.setState({ nodes: nodes })
   }
+
+
+
 
   handleModalClose(e) {
     this.setState({
@@ -122,7 +194,7 @@ class MainPage extends Component {
     if (this.state.childName.length>0 && isNaN(this.state.childName)){
       count++;
     } else {errorFields.push('Factory Name')}
-    if(this.state.numGrandchildren>0 && this.state.numGrandchildren<16){
+    if(this.state.numGrandChildren>0 && this.state.numGrandChildren<16){
       count++;
     } else {errorFields.push('Number of Nodes')}
     if(this.state.minVal>0 && !isNaN(this.state.minVal)){
@@ -132,21 +204,21 @@ class MainPage extends Component {
       count++;
     }else { errorFields.push('Max Range Val')}
     console.log(count, errorFields)
-    if (count === 4){
+    if (count === 4){ 
       this.handleModalClose();
     } else {
       let message = "\n"
       errorFields.forEach(val=>{
         message += `* ${val}\n`
       })
-      alert(`You have errors in one or more of the following fields ${message}`)
+      alert(`You have errors in one or more of the following fields: ${message}`)
     }
     
   }
 
   // This is the function that renders the page in the client's window.
   render() {
-    const { isAuthenticated } = this.props.auth;
+
     let children = false;
     if (this.state.nodes.length > 0) {
       children = true;
@@ -160,15 +232,12 @@ class MainPage extends Component {
         </Row> */}
         <Row>
           <Jumbotron>
-            {
-              isAuthenticated() ?
-                <h1>Hello {this.state.profile.nickname}: Time to Get Coding!!</h1> :
-                <h1> Hello! Time to get Coding! </h1>
-            }
+            <h1> Hello! Time to get Coding! </h1>
           </Jumbotron>
         </Row>
         <Row>
           <button className="primary" onClick={this.handleModalShow}>New Factory</button>
+          <button className="primary" onClick={this.sendNode}>Send Sample Data</button>
           <Modal show={this.state.show} onHide={this.handleModalClose}>
             <Modal.Header closeButton>
               <Modal.Title>Modal heading</Modal.Title>
@@ -194,8 +263,17 @@ class MainPage extends Component {
           <RootNode id="rootNode">
             {children ?
               this.state.nodes.map(item => {
-                return <ChildNode key={item.name} name={item.name} grandchildren={item.grandchildren} parent={item.parent}></ChildNode>
-              }) : <h4>No Children to Display</h4>
+                return (<ChildNode 
+                          key={item.id}
+                          id = {item.id} 
+                          name={item.name} 
+                          grandchildren={item.grandchildren} 
+                          parent={item.parent}
+                          handleDelete={this.deleteNode}
+                          handleNameEdit={this.changeNodeName}
+                          >
+                          </ChildNode>
+              )}) : <h4>No Children to Display</h4>
             }
           </RootNode>
         </Row>
