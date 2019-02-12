@@ -2,48 +2,24 @@ import React, { Component } from "react";
 import Jumbotron from "../../components/Jumbotron";
 import API from "../../utils/API";
 // import DeleteBtn from "../../components/DeleteBtn";
-import { Modal, Button } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import { /*Col,*/ Row, Container } from "../../components/Grid";
 // import history from '../../history.js';
 // import { List, ListItem } from "../../components/List";
-import Nav2 from "../../components/Nav2";
 import { RootNode } from "../../components/Nodes";
 import ChildNode from "../../components/Nodes/ChildNode";
 import  CustomForm  from "../../components/Form";
 
 class MainPage extends Component {
-  // type, name, parent, grandchildren,value
+  // type, name, parent,value
   state = {
-    nodes: [
-      {
-        nodetype: 'child',
-        name: 'Child1',
-        parent: 'Root',
-        grandchildren: [
-          {
-            nodetype: 'grandchild',
-            name: 'Grandchild1',
-            parent: 'Child1 ObjectId',
-            value: 422
-          },
-          {
-            nodetype: 'grandchild',
-            name: 'Grandchild2',
-            parent: 'Child1 ObjectId',
-            value: 224
-          },
-        ],
-        value: null
-      }
-    ],
-    profile: {},
+    nodes: [],
     show: false,
-    factory: {
-      name: "",
-      numChildren: 0,
-      minVal: 0,
-      maxVal: 1
-    }
+    childName: "",
+    numGrandChildren: null,
+    minVal: null,
+    maxVal: null,
+    errorFields: []
   };
 
 
@@ -57,16 +33,6 @@ class MainPage extends Component {
     this.handleModalShow = this.handleModalShow.bind(this)
     // this.handleInputChange = this.handleInputChange.bind(this)
 
-    const { userProfile, getProfile, isAuthenticated } = this.props.auth;
-    if (isAuthenticated()) {
-      if (!userProfile) {
-        getProfile((err, profile) => {
-          this.setState({ profile: profile });
-        });
-      } else {
-        this.setState({ profile: userProfile });
-      }
-    }
   }
   
 
@@ -118,8 +84,14 @@ class MainPage extends Component {
     this.setState({ nodes: nodes })
   }
 
-  handleModalClose() {
-    this.setState({ show: false });
+  handleModalClose(e) {
+    this.setState({
+      show: false,
+      childName: "",
+      numGrandChildren: null,
+      minVal: null,
+      maxVal: null
+    })
   }
 
   handleModalShow() {
@@ -131,25 +103,50 @@ class MainPage extends Component {
     // Destructure the name and value properties off of event.target
     // Update the appropriate state
     const { name, value } = event.target;
-    console.log(value)
+    console.log(name, value)
     this.setState({
       [name]: value
+    }, () => {
+      if (this.state.show){
+      }
     });
+
   };
 
   handleFormSubmit = e => {
     e.preventDefault();
+    console.log("Submission heard")
+    let count = 0;
+    let errorFields=[]; 
+    console.log(count,errorFields)
+    if (this.state.childName.length>0 && isNaN(this.state.childName)){
+      count++;
+    } else {errorFields.push('Factory Name')}
+    if(this.state.numGrandchildren>0 && this.state.numGrandchildren<16){
+      count++;
+    } else {errorFields.push('Number of Nodes')}
+    if(this.state.minVal>0 && !isNaN(this.state.minVal)){
+      count++;
+    }else { errorFields.push('Min Range Val')}
+    if(this.state.maxVal>0 && this.state.maxVal>this.state.minVal && !isNaN(this.state.maxVal) ){
+      count++;
+    }else { errorFields.push('Max Range Val')}
+    console.log(count, errorFields)
+    if (count === 4){
+      this.handleModalClose();
+    } else {
+      let message = "\n"
+      errorFields.forEach(val=>{
+        message += `* ${val}\n`
+      })
+      alert(`You have errors in one or more of the following fields ${message}`)
+    }
+    
   }
 
   // This is the function that renders the page in the client's window.
   render() {
     const { isAuthenticated } = this.props.auth;
-    // let profile = this.state.profile
-    // let navData = {
-    //   user: this.state.profile,
-    //   auth:this.props.auth
-    // }
-    // console.log(this.state.profile)
     let children = false;
     if (this.state.nodes.length > 0) {
       children = true;
@@ -178,11 +175,12 @@ class MainPage extends Component {
             </Modal.Header>
             <Modal.Body>
               <CustomForm
+              errors = {this.state.errorFields}
               handleInputChange={this.handleInputChange}
-              name={this.state.factory.name}
-              number={this.state.factory.numChildren}
-              minVal={this.state.factory.minVal}
-              maxVal={this.state.factory.maxVal}
+              name={this.state.childName}
+              number={this.state.numChildren}
+              minVal={this.state.minValue}
+              maxVal={this.state.maxValue}
               handleModalClose={this.handleModalClose}
               handleFormSubmit={this.handleFormSubmit}
               />
