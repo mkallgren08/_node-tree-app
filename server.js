@@ -3,19 +3,37 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const routes = require("./routes");
+const Pusher = require('pusher');
 
 require('dotenv').config();
 //console.log(process.env)
 const PORT = process.env.PORT || 3001;
 const app = express();
 
+// Set up Pusher options
+const pusher = new Pusher({
+  app_id: "711890",
+  key: "680dba39aa47204dd222",
+  secret: "0890ac6ad9f340727309",
+  cluster: "mt1",
+  encrypted: true
+});
+const channel = 'nodes';
+
 // Configure body parser for AJAX requests
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  next();
+});
+
 app.use(bodyParser.urlencoded({
-  extended: false
+  extended: true
 }));
 app.use(bodyParser.json());
-// Add routes, both API and view
-
+// Add routes
+app.use(routes);
 
 // Serve up static assets (usually on heroku)
 // if (process.env.NODE_ENV === "production") {
@@ -23,16 +41,13 @@ app.use(bodyParser.json());
 // }
 // Serve up static assets (usually on heroku)
 app.use(express.static("client/build"));
-app.use(routes);
+
 
 // Set up promises with mongoose
 mongoose.Promise = global.Promise;
 
 // Declare Mongoose Connection Parameters
 
-// "mongodb://heroku_cwf2cqkx:8vpi8pekalrvhlae96mahc4ktq@ds153494.mlab.com:53494/heroku_cwf2cqkx"
-
-//  'mongodb://localhost/hangman_options' ||
 
 
 let mongoConnect = process.env.MONGODB_URI;

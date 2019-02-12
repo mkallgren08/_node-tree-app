@@ -1,2 +1,1 @@
-export * from "./EditFactory";
-export * from "./NewFactory";
+export * from "./MyModal";

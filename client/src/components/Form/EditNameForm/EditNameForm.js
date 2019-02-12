@@ -2,6 +2,13 @@ import React, { Component } from "react";
 import "../Form.css"
 
 class EditNameForm extends Component {
+  state={
+    id:this.props.id
+  }
+
+  componentDidMount(){
+    console.log(this.state.id)
+  }
   render() {
     return (
       <form>

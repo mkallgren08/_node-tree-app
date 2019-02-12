@@ -1,17 +1,28 @@
 import React, { Component } from 'react';
-import {Modal} from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import "./Nodes.css"
 import GrandchildNode from "./GrandchildNode"
-import  EditNameForm  from '../Form/EditNameForm/index';
+import EditNameForm from '../Form/EditNameForm/index';
+import { MyModal } from '../Modals';
 
 class ChildNode extends Component {
 
-  
+  constructor(props) {
+    super(props)
+    this.state = {
+      modalId: this.props.id
+    }
+  }
+
+  componentDidMount = () => {
+    console.log(this.state.modalId)
+  }
+
   render() {
     //console.log(this.state)
     let grandchildren = true;
-    if (this.props.grandchildren.length===0){
-      grandchildren=false
+    if (this.props.grandchildren.length === 0) {
+      grandchildren = false
     }
 
     return (
@@ -22,30 +33,26 @@ class ChildNode extends Component {
           <button className="delete" onClick={() => this.props.handleDelete(this.props.id)}>X</button>
         </div>
         <div className="childBody">
-          { grandchildren?
-            this.props.grandchildren.map(item=>{
+          {grandchildren ?
+            this.props.grandchildren.map(item => {
               return <GrandchildNode key={item.id} name={item.name} parent={item.parent} value={item.value}></GrandchildNode>
             }) : <div>No grandchildren to render</div>
           }
         </div>
-        <Modal show={this.props.showName} onHide={this.props.handleModalClose}>
-            <Modal.Header closeButton>
-              <Modal.Title>Edit Factory Name</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <EditNameForm
-              errors = {this.props.errorFields}
-              handleInputChange={this.props.handleInputChange}
-              name={this.props.name}
-              newName={this.props.newName}
-              handleModalClose={this.props.handleModalClose}
-              handleFormSubmit={this.props.handleNameEdit}
-              id = {this.props.id}
-              />
-            </Modal.Body>
-            <Modal.Footer>
-            </Modal.Footer>
-          </Modal>
+        <MyModal
+          show={this.props.showName}
+          onHide={this.props.handleModalClose}
+        >
+          <EditNameForm
+            errors={this.props.errorFields}
+            handleInputChange={this.props.handleInputChange}
+            name={this.props.name}
+            newName={this.props.newName}
+            handleModalClose={this.props.handleModalClose}
+            handleFormSubmit={this.props.handleNameEdit}
+            id={this.props.id}
+          />
+        </MyModal>
       </div>
     )
   }
