@@ -57,7 +57,7 @@ app.use(express.static("client/build"));
 mongoose.Promise = global.Promise;
 
 // Declare Mongoose Connection Parameters
-let mongoConnect = process.env.MONGODB_URI2;
+let mongoConnect = process.env.MONGODB_URI;
 
 // Connect to the Mongo DB
 mongoose.connect(
@@ -80,36 +80,36 @@ db.on("error", function (error) {
 db.once("open", function () {
   console.log(`Mongoose connection to ${mongoConnect} successful.`);
 
-  const nodeCollection = db.collection('nodes');
-  const changeStream = nodeCollection.watch();
+  // const nodeCollection = db.collection('nodes');
+  // const changeStream = nodeCollection.watch();
 
-  changeStream.on('change', (change) => {
-    //console.log(change);
+  // changeStream.on('change', (change) => {
+  //   //console.log(change);
       
-    if(change.operationType === 'insert') {
-      const child = change.fullDocument;
-      console.log(child)
-      pusher.trigger(
-        channel,
-        'inserted', 
-        // {
-        //   id: child._id,
-        //   nodetype: child.nodetype,
-        //   parent:child.parent,
-        //   name:child.name,
-        //   value:child.value
-        // }
-      ); 
-    } else if(change.operationType === 'delete') {
-      pusher.trigger(
-        channel,
-        'deleted', 
-        change.documentKey._id
-      );
-    } else if (change.operationType){
-      console.log("Connection")
-    }
-  });
+  //   if(change.operationType === 'insert') {
+  //     const child = change.fullDocument;
+  //     console.log(child)
+  //     pusher.trigger(
+  //       channel,
+  //       'inserted', 
+  //       // {
+  //       //   id: child._id,
+  //       //   nodetype: child.nodetype,
+  //       //   parent:child.parent,
+  //       //   name:child.name,
+  //       //   value:child.value
+  //       // }
+  //     ); 
+  //   } else if(change.operationType === 'delete') {
+  //     pusher.trigger(
+  //       channel,
+  //       'deleted', 
+  //       change.documentKey._id
+  //     );
+  //   } else if (change.operationType){
+  //     console.log("Connection")
+  //   }
+  // });
 });
 
 // Send every request to the React app
