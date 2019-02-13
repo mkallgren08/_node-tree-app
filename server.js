@@ -10,15 +10,25 @@ require('dotenv').config();
 const PORT = process.env.PORT || 3001;
 const app = express();
 
-// Set up Pusher options
-const pusher = new Pusher({
-  app_id: "711890",
-  key: "680dba39aa47204dd222",
-  secret: "0890ac6ad9f340727309",
-  cluster: "mt1",
+//Set up Pusher options
+// console.log(process.env.PUSHER_APPID)
+// const pusher = new Pusher({
+//   app_id: process.env.PUSHER_APPID,
+//   key: process.env.PUSHER_KEY,
+//   secret: process.env.PUSHER_SECRET,
+//   cluster: process.env.PUSHER_CLUSTER,
+//   encrypted: true
+// });
+// const channel = 'nodes';
+
+var pusher = new Pusher({
+  appId: '711890',
+  key: '680dba39aa47204dd222',
+  secret: '0890ac6ad9f340727309',
+  cluster: 'mt1',
   encrypted: true
 });
-const channel = 'nodes';
+const channel = 'nodes'
 
 // Configure body parser for AJAX requests
 app.use((req, res, next) => {
@@ -47,18 +57,17 @@ app.use(express.static("client/build"));
 mongoose.Promise = global.Promise;
 
 // Declare Mongoose Connection Parameters
-
-
-
-let mongoConnect = process.env.MONGODB_URI;
-
+let mongoConnect = process.env.MONGODB_URI2;
 
 // Connect to the Mongo DB
 mongoose.connect(
-  mongoConnect, {
-    useMongoClient: true
-  }
+  mongoConnect
 );
+
+// Test the Pusher connection
+pusher.trigger('my-channel', 'my-event', {
+  "message": "hello world"
+});
 
 const db = mongoose.connection;
 
@@ -70,6 +79,36 @@ db.on("error", function (error) {
 // Once logged in to the db through mongoose, log a success message
 db.once("open", function () {
   console.log(`Mongoose connection to ${mongoConnect} successful.`);
+
+  // const nodeCollection = db.collection('nodes');
+  // const changeStream = nodeCollection.watch();
+
+  // changeStream.on('change', (change) => {
+  //   console.log(change);
+      
+  //   if(change.operationType === 'insert') {
+  //     const child = change.fullDocument;
+  //     pusher.trigger(
+  //       channel,
+  //       'inserted', 
+  //       {
+  //         id: child._id,
+  //         nodetype: child.nodetype,
+  //         parent:child.parent,
+  //         name:child.name,
+  //         value:child.value
+  //       }
+  //     ); 
+  //   } else if(change.operationType === 'delete') {
+  //     pusher.trigger(
+  //       channel,
+  //       'deleted', 
+  //       change.documentKey._id
+  //     );
+  //   } else if (change.operationType){
+  //     console.log("Connection")
+  //   }
+  // });
 });
 
 // Send every request to the React app
