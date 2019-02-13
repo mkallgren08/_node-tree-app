@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Modal } from "react-bootstrap";
 import "./Nodes.css"
 import GrandchildNode from "./GrandchildNode"
 import EditNameForm from '../Form/EditNameForm/index';

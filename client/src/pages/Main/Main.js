@@ -1,11 +1,9 @@
 import React, { Component } from "react";
 import Jumbotron from "../../components/Jumbotron";
 import API from "../../utils/API";
-// import DeleteBtn from "../../components/DeleteBtn";
 import { MyModal } from "../../components/Modals"
-import { /*Col,*/ Row, Container } from "../../components/Grid";
+import {Row, Container } from "../../components/Grid";
 // import history from '../../history.js';
-// import { List, ListItem } from "../../components/List";
 import { RootNode } from "../../components/Nodes";
 import ChildNode from "../../components/Nodes/ChildNode";
 import CustomForm from "../../components/Form/CustomForm";
