@@ -14,8 +14,8 @@ const router = express.Router();
 
 /* CREATE */
 router.post('/new', (req, res) => {
-  console.log(Child)
-  console.log(req.body)
+  // console.log(Child)
+  // console.log(req.body)
 
   Child.create(req.body, (err, child) => {
     if (err) {
