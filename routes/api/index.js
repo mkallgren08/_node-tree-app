@@ -24,7 +24,7 @@ router.post('/done', (req, res) => {
   //console.log(Child)
   console.log(req.body)
   pusher.trigger('my-channel', 'my-event', {
-    "message": "hello world"
+    "message": "Finished with data manipulation"
   }, (err)=> {
     if (err) {
       res.status(500).send('Error')
