@@ -3,32 +3,15 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const routes = require("./routes");
-const Pusher = require('pusher');
+// const Pusher = require('pusher');
 
 require('dotenv').config();
 //console.log(process.env)
 const PORT = process.env.PORT || 3001;
 const app = express();
 
-//Set up Pusher options
-console.log(process.env.PUSHER_APPID)
-const pusher = new Pusher({
-  app_id: process.env.PUSHER_APPID,
-  key: process.env.PUSHER_KEY,
-  secret: process.env.PUSHER_SECRET,
-  cluster: process.env.PUSHER_CLUSTER,
-  encrypted: true
-});
+const pusher = require('./utils/pusher')
 const channel = 'nodes';
-
-var pusher = new Pusher({
-  appId: '711890',
-  key: '680dba39aa47204dd222',
-  secret: '0890ac6ad9f340727309',
-  cluster: 'mt1',
-  encrypted: true
-});
-const channel = 'nodes'
 
 // Configure body parser for AJAX requests
 // app.use((req, res, next) => {
@@ -78,7 +61,7 @@ db.on("error", function (error) {
 
 // Once logged in to the db through mongoose, log a success message
 db.once("open", function () {
-  console.log(`Mongoose connection to ${mongoConnect} successful.`);
+  console.log(`Mongoose connection to database successful.`); /*${mongoConnect}*/
 
   const nodeCollection = db.collection('nodes');
   const changeStream = nodeCollection.watch();
@@ -88,17 +71,18 @@ db.once("open", function () {
       
     if(change.operationType === 'insert') {
       const child = change.fullDocument;
+      console.log("Child Data: ")
       console.log(child)
       pusher.trigger(
         channel,
         'inserted', 
-        // {
-        //   id: child._id,
-        //   nodetype: child.nodetype,
-        //   parent:child.parent,
-        //   name:child.name,
-        //   value:child.value
-        // }
+        {
+          id: child._id,
+          nodetype: child.nodetype,
+          parent:child.parent,
+          name:child.name,
+          value:child.value
+        }
       ); 
     } else if(change.operationType === 'delete') {
       pusher.trigger(

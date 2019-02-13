@@ -7,10 +7,10 @@ import {Row, Container } from "../../components/Grid";
 import { RootNode } from "../../components/Nodes";
 import ChildNode from "../../components/Nodes/ChildNode";
 import CustomForm from "../../components/Form/CustomForm";
-// import Pusher from "pusher-js";
+import Pusher from "pusher-js";
 
-// const PUSHER_APP_KEY = '680dba39aa47204dd222';
-// const PUSHER_APP_CLUSTER = 'mt1';
+const PUSHER_APP_KEY = '680dba39aa47204dd222';
+const PUSHER_APP_CLUSTER = 'mt1';
 
 class MainPage extends Component {
   // type, name, parent,value
@@ -55,21 +55,31 @@ class MainPage extends Component {
 
   // Initial load of saved items
   componentDidMount() {
-    // this.pusher = new Pusher(PUSHER_APP_KEY, {
-    //   cluster: PUSHER_APP_CLUSTER,
-    //     forceTLS: true,
-    //   });
-    // this.channel = this.pusher.subscribe('nodes');
-    // this.channel2 = this.pusher.subscribe('my-channel');
-    // this.channel.bind('inserted', (data)=> {
-    //   console.log(JSON.stringify(data));
-    //   this.setState(prevState => ({rawnodes:prevState.rawnodes.concat(data)}))
-    // });
+    this.pusher = new Pusher(PUSHER_APP_KEY, {
+      cluster: PUSHER_APP_CLUSTER,
+        forceTLS: true,
+      });
+    this.channel = this.pusher.subscribe('nodes');
+    this.channel2 = this.pusher.subscribe('my-channel');
     
-    //this.channel.bind('inserted', this.postNodes);
+    this.channel.bind('inserted', this.pushData);
       // this.channel.bind('deleted', this.deleteNode);
+      // this.channel.bind('done', ()=>{this.parseData(this.state.rawnodes)});
     this.loadNodeData();
   };
+
+  // =============================================================
+  //  Pusher Data Read/Write Functions
+  // ============================================================= 
+  pushData = (data) => {
+    console.log(data)
+    this.setState(prevState=>({rawnodes:prevState.rawnodes.concat(data)}) 
+    , ()=>{
+      console.log(this.state.rawnodes)
+      // setTimeout(()=> {this.parseNodes(this.state.rawnodes)}, 50);
+      // this.parseNodes(this.state.rawnodes)
+    })
+  } 
 
   // =============================================================
   //  DB Read/Write Functions
@@ -81,7 +91,9 @@ class MainPage extends Component {
       .then(
         res => {
           // console.log("test data: " + JSON.stringify(res.data, null, 2))
-          this.parseNodes(res.data);
+          this.setState(prevState=> ({rawnodes:prevState.rawnodes.concat(res.data)}), ()=>{
+            this.parseNodes(res.data);
+          })
         })
       .catch(err => console.log(err));
   };
@@ -102,13 +114,13 @@ class MainPage extends Component {
     API.saveNode(nodes)
       .then(res => {
         console.log(res)
-        // //console.log(res.data._id)
-        // if (grandkids) {
-        //   this.generateGrndchld(res.data._id)
-        // } else {
-        //   console.log(this.state.rawnodes)
-        //   this.loadNodeData()
-        // }
+        //console.log(res.data._id)
+        if (grandkids) {
+          this.generateGrndchld(res.data._id)
+        } else {
+          console.log(this.state.rawnodes)
+          //this.loadNodeData()
+        }
       })
       .catch(err => console.log(err))
   }
@@ -180,7 +192,7 @@ class MainPage extends Component {
     console.log(grandkids)
     this.postNodes(grandkids, false)
   }
-  // Takes the data retrived from Mongo and parses the relationships between child
+  // Takes the data retrieved from Mongo and parses the relationships between child
   // and grandchild node - also hides any open Modals
   parseNodes = (data) => {
     let nodes = [];
@@ -241,7 +253,7 @@ class MainPage extends Component {
     // Destructure the name and value properties off of event.target
     // Update the appropriate state
     const { name, value } = event.target;
-    console.log(name, value)
+    // console.log(name, value)
     if (name === 'minVal' || name === 'maxVal' || name === 'numGrandChildren') {
       let nuval = parseInt(value, 10)
       this.setState({

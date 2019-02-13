@@ -1,22 +1,13 @@
-// const router = require("express").Router();
-// const testdataRoutes = require('./testdata.js');
-
-// //  routes
-// router.use("/testdata", testdataRoutes);
-
-// module.exports = router;
-
-
 const Child = require('../../models/child');
 const express = require('express');
 const router = express.Router();
+const pusher = require('./../../utils/pusher')
 
 
 /* CREATE */
 router.post('/new', (req, res) => {
   // console.log(Child)
   // console.log(req.body)
-
   Child.create(req.body, (err, child) => {
     if (err) {
       console.log('CREATE Error: ' + err);
@@ -27,42 +18,25 @@ router.post('/new', (req, res) => {
   });
 });
 
-/* CREATE MANY*/
-router.post('/new/many', (req, res) => {
+/* PUSHER 'DONE' EVENT*/
+// CHECK IF THIS ONE CAN BE DELETED
+router.post('/done', (req, res) => {
   //console.log(Child)
   console.log(req.body)
-  // Child.create({
-  //   nodetype: req.body.nodetype,
-  //   parent: req.body.parent,
-  //   name: req.body.name,
-  //   value: req.body.value
-  // }, (err, child) => {
-  //   if (err) {
-  //     console.log('CREATE Error: ' + err);
-  //     res.status(500).send('Error');
-  //   } else {
-  //     res.status(200).json(child);
-  //   }
-  // });
-  res.send(req.body)
+  pusher.trigger('my-channel', 'my-event', {
+    "message": "hello world"
+  }, (err)=> {
+    if (err) {
+      res.status(500).send('Error')
+    } else {
+      res.status(200).send('Done')
+    }
+  });
 });
 
 /* UPDATE */
 router.post('/edit/:id', (req, res) => {
   console.log(req.body)
-  // Child.create({
-  //   nodetype: req.body.nodetype,
-  //   parent: req.body.parent,
-  //   name: req.body.name,
-  //   value: req.body.value
-  // }, (err, task) => {
-  //   if (err) {
-  //     console.log('CREATE Error: ' + err);
-  //     res.status(500).send('Error');
-  //   } else {
-  //     res.status(200).json(task);
-  //   }
-  // });
   Child.findOneAndUpdate(
     { _id: req.params.id }, { $set: { name: req.body.newName } },
     { new: true }, (err, child) => {
@@ -108,7 +82,6 @@ router.route('/deleteMany/:id')
         res.status(404).send('Not found');
       }
     })
-
   });
 
 /* FIND ALL */
@@ -125,9 +98,6 @@ router.get("/nodes", (req, res) => {
       res.status(404).send('Not found');
     }
   })
-  // .sort({date:-1})
-  // .then(dbTask => res.json(dbTask))
-  // .catch(err => res.status(422).json(err))
 })
 
 module.exports = router;
