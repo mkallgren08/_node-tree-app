@@ -57,7 +57,7 @@ app.use(express.static("client/build"));
 mongoose.Promise = global.Promise;
 
 // Declare Mongoose Connection Parameters
-let mongoConnect = process.env.MONGODB_URI;
+let mongoConnect = process.env.MONGODB_URI2;
 
 // Connect to the Mongo DB
 mongoose.connect(

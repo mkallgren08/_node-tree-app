@@ -7,15 +7,17 @@ import {Row, Container } from "../../components/Grid";
 import { RootNode } from "../../components/Nodes";
 import ChildNode from "../../components/Nodes/ChildNode";
 import CustomForm from "../../components/Form/CustomForm";
-import Pusher from "pusher-js";
+// import Pusher from "pusher-js";
 
-const PUSHER_APP_KEY = '680dba39aa47204dd222';
-const PUSHER_APP_CLUSTER = 'mt1';
+// const PUSHER_APP_KEY = '680dba39aa47204dd222';
+// const PUSHER_APP_CLUSTER = 'mt1';
 
 class MainPage extends Component {
   // type, name, parent,value
   state = {
     rawnodes:[],
+    childnodes: [],
+    grandchildnodes: [],
     nodes: [],
     show: false,
     showNameEdit: false,
@@ -53,16 +55,16 @@ class MainPage extends Component {
 
   // Initial load of saved items
   componentDidMount() {
-    this.pusher = new Pusher(PUSHER_APP_KEY, {
-      cluster: PUSHER_APP_CLUSTER,
-        forceTLS: true,
-      });
-    this.channel = this.pusher.subscribe('nodes');
-    this.channel2 = this.pusher.subscribe('my-channel');
-    this.channel.bind('inserted', (data)=> {
-      console.log(JSON.stringify(data));
-      this.setState(prevState => ({rawnodes:prevState.rawnodes.concat(data)}))
-    });
+    // this.pusher = new Pusher(PUSHER_APP_KEY, {
+    //   cluster: PUSHER_APP_CLUSTER,
+    //     forceTLS: true,
+    //   });
+    // this.channel = this.pusher.subscribe('nodes');
+    // this.channel2 = this.pusher.subscribe('my-channel');
+    // this.channel.bind('inserted', (data)=> {
+    //   console.log(JSON.stringify(data));
+    //   this.setState(prevState => ({rawnodes:prevState.rawnodes.concat(data)}))
+    // });
     
     //this.channel.bind('inserted', this.postNodes);
       // this.channel.bind('deleted', this.deleteNode);
@@ -100,13 +102,13 @@ class MainPage extends Component {
     API.saveNode(nodes)
       .then(res => {
         console.log(res)
-        //console.log(res.data._id)
-        if (grandkids) {
-          this.generateGrndchld(res.data._id)
-        } else {
-          console.log(this.state.rawnodes)
-          this.loadNodeData()
-        }
+        // //console.log(res.data._id)
+        // if (grandkids) {
+        //   this.generateGrndchld(res.data._id)
+        // } else {
+        //   console.log(this.state.rawnodes)
+        //   this.loadNodeData()
+        // }
       })
       .catch(err => console.log(err))
   }
